@@ -22,6 +22,7 @@ TEST_CASE("Matmul fp8 precision", "[matmul][graph]") {
     Surface<float> B_descale_gpu(1, false);
 
     fe::graph::Graph graph{};
+    graph.set_compute_data_type(fe::DataType_t::FLOAT).set_intermediate_data_type(fe::DataType_t::FLOAT);
 
     // Create the two non-virtual input tensors A and B.
     // There are read from global memory.
@@ -88,7 +89,7 @@ TEST_CASE("Matmul fp8 precision", "[matmul][graph]") {
 //    C_after_add->set_output(true).set_data_type(cudnn_frontend::DataType_t::FLOAT);
     auto relu_options = fe::graph::Pointwise_attributes().set_mode(fe::PointwiseMode_t::GELU_FWD);
     auto O            = graph.pointwise(C_after_add, relu_options);
-    O->set_output(true);
+    O->set_output(true).set_data_type(fe::DataType_t::FP8_E4M3);
 
 
     REQUIRE(graph.validate().is_good());
